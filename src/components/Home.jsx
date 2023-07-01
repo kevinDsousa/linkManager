@@ -1,8 +1,9 @@
+import { ListUsers } from "./ListUsers"
 
 export const Home = () => {
     return (
         <div>
-            <p>oi</p>
+            <ListUsers />
         </div>
     )
 }

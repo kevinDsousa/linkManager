@@ -1,4 +1,4 @@
-import { UserOutlined, HomeOutlined, LoginOutlined } from "@ant-design/icons";
+import { HomeOutlined, LoginOutlined } from "@ant-design/icons";
 import { Menu as MenuAnt } from "antd";
 import { Link } from "react-router-dom";
 // import { isLogado } from "../auth";
@@ -9,14 +9,8 @@ export const Menu = () => {
     {
       label: "Home",
       key: "mail",
-      to: "/home",
+      to: "/",
       icon: <HomeOutlined />,
-    },
-    {
-      label: "Usuários",
-      key: "app",
-      to: "/users",
-      icon: <UserOutlined />,
     },
     {
       label: "Login",

@@ -1,4 +1,4 @@
-import Layout, { Footer, Header } from "antd/es/layout/layout";
+import Layout, { Header } from "antd/es/layout/layout";
 import { Menu } from "./components/Menu"
 import Routes from "./Routes";
 
@@ -12,8 +12,6 @@ function App() {
       </Layout>
 
       <Routes />
-
-      <Footer />
     </>
   );
 }

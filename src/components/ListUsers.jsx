@@ -1,4 +1,5 @@
 import api from "../services/api";
+import { Link } from "react-router-dom";
 import { Card, Space } from "antd";
 
 import { useEffect, useState } from "react";
@@ -23,16 +24,26 @@ export const ListUsers = () => {
   }, []);
 
   return (
-    <Space direction="vertical" size={16} className="flex flex-1 mx-5 my-5">
+    <Space
+      direction="vertical"
+      size={32}
+      className="grid grid-cols-2 mx-5 my-5"
+    >
       {list.map((item) => {
         return (
-          <Card key={item.id} bordered={true} className="border-slate-950 flex flex-1">
-            <p className="text-center text-2xl text-slate-900">{item.name}</p>
-            <img
-              className="rounded-full w-40 h-40"
-              src={item.gravatarUrl}
-              alt={ImageBitmap.name}
-            />
+          <Card
+            key={item.id}
+            bordered={true}
+            className="border-[#ccc] flex flex-1 items-center bg-slate-100 transition hover:scale-105"
+          >
+            <p className="text-center text-2xl text-[#001529]">{item.name}</p>
+            <Link to={`/user/:${item.id}`}>
+              <img
+                className="rounded-full w-20 h-20"
+                src={item.gravatarUrl}
+                alt={ImageBitmap.name}
+              />
+            </Link>
           </Card>
         );
       })}
