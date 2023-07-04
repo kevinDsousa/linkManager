@@ -1,21 +1,23 @@
 import api from "../services/api";
 import { Link } from "react-router-dom";
 import { Card, Space } from "antd";
+import { Loading } from "./Loading";
 
 import { useEffect, useState } from "react";
 
 export const ListUsers = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // Inicia com loading como true
   const [list, setList] = useState([]);
 
   const getUsers = async () => {
     try {
-      setLoading(true);
       const resp = await api.get("/users");
       const data = resp.data;
       setList(data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(true); // Define loading como false após a conclusão do carregamento
     }
   };
 
@@ -27,10 +29,12 @@ export const ListUsers = () => {
     <Space
       direction="vertical"
       size={32}
-      className="grid grid-cols-2 mx-5 my-5"
+      className={`mx-5 my-5 ${!loading ? "flex flex-1" : "grid grid-cols-2"}`}
     >
-      {list.map((item) => {
-        return (
+      {!loading ? (
+        <Loading /> // Renderizar o componente Loading se loading for true
+      ) : (
+        list.map((item) => (
           <Card
             key={item.id}
             bordered={true}
@@ -41,12 +45,12 @@ export const ListUsers = () => {
               <img
                 className="rounded-full w-20 h-20"
                 src={item.gravatarUrl}
-                alt={ImageBitmap.name}
+                alt={item.name} // Corrigir o valor do atributo alt
               />
             </Link>
           </Card>
-        );
-      })}
+        ))
+      )}
     </Space>
   );
 };
