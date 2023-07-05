@@ -28,8 +28,8 @@ export const ListUsers = () => {
   return (
     <Space
       direction="vertical"
-      size={32}
-      className={`mx-5 my-5 ${!loading ? "flex flex-1" : "grid grid-cols-2"}`}
+      size={8}
+      className={`mx-6 my-6 ${!loading ? "flex flex-1" : "grid grid-cols-2"}`}
     >
       {!loading ? (
         <Loading /> // Renderizar o componente Loading se loading for true
@@ -38,10 +38,10 @@ export const ListUsers = () => {
           <Card
             key={item.id}
             bordered={true}
-            className="border-[#ccc] flex flex-1 items-center bg-slate-100 transition hover:scale-105"
+            className="border-[#aaa9a9] flex flex-1 items-center bg-slate-200 transition hover:scale-105 delay-200 duration-200"
           >
             <p className="text-center text-2xl text-[#001529]">{item.name}</p>
-            <Link to={`/user/:${item.id}`}>
+            <Link to={`/users/${item.id}`}>
               <img
                 className="rounded-full w-20 h-20"
                 src={item.gravatarUrl}
