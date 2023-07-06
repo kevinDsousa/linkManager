@@ -8,8 +8,8 @@ export const Dashboard = () => {
       <Layout>
         <Header>
           <Menu />
-          <ListUsers />
         </Header>
+        <ListUsers />
       </Layout>
     </div>
   );

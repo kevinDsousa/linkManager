@@ -1,5 +1,10 @@
-import { HomeOutlined, LoginOutlined, LogoutOutlined, LinkOutlined } from "@ant-design/icons";
-import { Menu as MenuAnt } from "antd";
+import {
+  HomeOutlined,
+  LoginOutlined,
+  LogoutOutlined,
+  LinkOutlined,
+} from "@ant-design/icons";
+import { Avatar, Menu as MenuAnt } from "antd";
 import { Link } from "react-router-dom";
 import { LoginContext } from "../App";
 import { useContext } from "react";
@@ -34,20 +39,30 @@ export const Menu = () => {
             onClick: handleLogout,
             icon: <LogoutOutlined />,
           },
-          localStorage.getItem('id') && {
+          localStorage.getItem("id") && {
             label: "Meus Links",
             key: "profile",
-            to: `/users/${localStorage.getItem('id')}`,
+            to: `/users/${localStorage.getItem("id")}`,
             icon: <LinkOutlined />,
-          }
-        ]
+          },
+          localStorage.getItem("id") && {
+            label: `${localStorage.getItem("name")}`,
+            key: "my-account",
+            icon: (
+              <Avatar className="translate-y-3" size={36} src={"https://github.com/kevindsousa.png"} />
+            ),
+          },
+        ],
   ];
 
   function generateLinks(items) {
-    return items.flat().filter(Boolean).map((item) => ({
-      ...item,
-      label: <Link to={item.to}>{item.label}</Link>,
-    }));
+    return items
+      .flat()
+      .filter(Boolean)
+      .map((item) => ({
+        ...item,
+        label: <Link to={item.to}>{item.label}</Link>,
+      }));
   }
 
   return (

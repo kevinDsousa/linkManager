@@ -17,7 +17,7 @@ const tabListNoTitle = [
 ];
 
 export const ListUsers = () => {
-  const [activeTabKey2, setActiveTabKey2] = useState("app");
+  const [activeTabKey2, setActiveTabKey2] = useState("profile"); // Definindo "profile" como a aba ativa por padrão
 
   const onTab2Change = (key) => {
     setActiveTabKey2(key);
@@ -62,6 +62,7 @@ export const ListUsers = () => {
               tabList={tabListNoTitle}
               activeTabKey={activeTabKey2}
               onTabChange={onTab2Change}
+              defaultActiveTabKey="profile" // Define "Perfil" como a aba ativa por padrão
             >
               <img className="rounded w-20 h-20" src={item.gravatarUrl} />
               <span className="font-mono font-semibold">{item.name}</span>
@@ -72,4 +73,3 @@ export const ListUsers = () => {
     </Space>
   );
 };
-

@@ -3,7 +3,7 @@ import { Layout, Alert, Button, Form, Input } from "antd";
 import { useState } from "react";
 import { LoginContext } from "../App";
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import login from "../assets/login.jpg";
 import api from "../services/api";
@@ -25,11 +25,11 @@ export const LoginForm = () => {
       });
       setName(response.data.user.name);
       setToken(response.data.token);
-      setId(response.data.token)
+      setId(response.data.token);
       setShowSuccessAlert(true);
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("name", response.data.user.name);
-      localStorage.setItem("id", response.data.user.id)
+      localStorage.setItem("id", response.data.user.id);
       navigate("/"); // Redirecionar para a rota '/'
     } catch (error) {
       form.resetFields();
@@ -85,13 +85,21 @@ export const LoginForm = () => {
             </Form.Item>
             <Form.Item shouldUpdate>
               {() => (
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  className="bg-white text-[#001529] w-full mt-5 rounded-full"
-                >
-                  Acessar conta
-                </Button>
+                <>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="bg-white text-[#001529] w-full mt-5 rounded-full"
+                  >
+                    Acessar conta
+                  </Button>
+                  <Button 
+                  htmlType="button"
+                  className="mt-5 bg-transparent border-none text-white w-full"
+                  >
+                    <Link to="/">Retornar</Link>
+                  </Button>
+                </>
               )}
             </Form.Item>
           </Form>
