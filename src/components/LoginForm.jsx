@@ -3,6 +3,7 @@ import { Layout, Alert, Button, Form, Input } from "antd";
 import { useState } from "react";
 import { LoginContext } from "../App";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 import login from "../assets/login.jpg";
 import api from "../services/api";
@@ -12,8 +13,9 @@ const { Content } = Layout;
 export const LoginForm = () => {
   const [form] = Form.useForm();
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-  const { setName } = useContext(LoginContext);
-  const { setToken } = useContext(LoginContext);
+  const { setName, setToken } = useContext(LoginContext);
+  const { setId } = useContext(LoginContext);
+  const navigate = useNavigate();
 
   const onFinish = async (values) => {
     try {
@@ -22,12 +24,15 @@ export const LoginForm = () => {
         password: values.password,
       });
       setName(response.data.user.name);
-      setToken(response.data.token)
+      setToken(response.data.token);
+      setId(response.data.token)
       setShowSuccessAlert(true);
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("name", response.data.user.name);
+      localStorage.setItem("id", response.data.user.id)
+      navigate("/"); // Redirecionar para a rota '/'
     } catch (error) {
-      form.resetFields()
+      form.resetFields();
     }
   };
 
@@ -60,6 +65,7 @@ export const LoginForm = () => {
               <Input
                 prefix={<UserOutlined className="site-form-item-icon" />}
                 placeholder="Email"
+                autoComplete="current-email"
               />
             </Form.Item>
             <Form.Item
@@ -74,6 +80,7 @@ export const LoginForm = () => {
               <Input.Password
                 prefix={<LockOutlined className="site-form-item-icon" />}
                 placeholder="Password"
+                autoComplete="current-password"
               />
             </Form.Item>
             <Form.Item shouldUpdate>

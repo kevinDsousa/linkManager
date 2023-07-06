@@ -1,17 +1,28 @@
 import { Routes as RoutesDom, Route } from "react-router-dom";
-import { Home } from "./components/Home";
 import { LoginForm } from "./components/LoginForm";
-import { PerfilUser } from "./components/PerfilUsers";
+// import { PerfilUser } from "./components/PerfilUsers";
 import { NotFound } from "./components/NotFound";
+import { LoginContext } from "./App";
+import { useContext } from "react";
+import { Dashboard } from "./layouts/Dashboard";
 
 function Routes() {
+  const { token } = useContext(LoginContext);
+
   return (
     <RoutesDom>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<LoginForm />} />
-      <Route path="/users/:id" element={<PerfilUser />} />
+      {token ? (
+        <>
+          <Route path="/" element={<Dashboard />} />
+        </>
+      ) : (
+        <>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/login" element={<LoginForm />} />
+        </>
+      )}
 
-      <Route path="*" element={<NotFound/>} />
+      <Route path="*" element={<NotFound />} />
     </RoutesDom>
   );
 }

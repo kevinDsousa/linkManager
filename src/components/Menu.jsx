@@ -1,31 +1,60 @@
-import { HomeOutlined, LoginOutlined } from "@ant-design/icons";
+import { HomeOutlined, LoginOutlined, LogoutOutlined, LinkOutlined } from "@ant-design/icons";
 import { Menu as MenuAnt } from "antd";
 import { Link } from "react-router-dom";
-// import { isLogado } from "../auth";
+import { LoginContext } from "../App";
+import { useContext } from "react";
 
 export const Menu = () => {
+  const { token } = useContext(LoginContext);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("name");
+    localStorage.removeItem("id");
+  };
 
   const items = [
     {
-      label: "Home",
+      label: "Inicio",
       key: "mail",
       to: "/",
       icon: <HomeOutlined />,
     },
-    {
-      label: "Login",
-      key: "login",
-      to: "/login",
-      icon: <LoginOutlined />,
-    },
+    !token
+      ? {
+          label: "Logar",
+          key: "login",
+          to: "/login",
+          icon: <LoginOutlined />,
+        }
+      : [
+          {
+            label: "Sair",
+            key: "exit",
+            onClick: handleLogout,
+            icon: <LogoutOutlined />,
+          },
+          localStorage.getItem('id') && {
+            label: "Meus Links",
+            key: "profile",
+            to: `/users/${localStorage.getItem('id')}`,
+            icon: <LinkOutlined />,
+          }
+        ]
   ];
 
-  function genarateLinks(items) {
-    return items.filter(Boolean).map((item) => ({
+  function generateLinks(items) {
+    return items.flat().filter(Boolean).map((item) => ({
       ...item,
       label: <Link to={item.to}>{item.label}</Link>,
     }));
   }
 
-  return <MenuAnt theme="dark" mode="horizontal" items={genarateLinks(items)}></MenuAnt>;
-}
+  return (
+    <MenuAnt
+      theme="dark"
+      mode="horizontal"
+      items={generateLinks(items)}
+    ></MenuAnt>
+  );
+};
