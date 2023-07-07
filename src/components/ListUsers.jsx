@@ -52,22 +52,20 @@ export const ListUsers = () => {
         <Loading /> // Renderizar o componente Loading se loading for true
       ) : (
         list.map((item) => (
-          <>
-            <Card
-              key={item.id}
-              bordered={true}
-              style={{
-                width: "70%",
-              }}
-              tabList={tabListNoTitle}
-              activeTabKey={activeTabKey2}
-              onTabChange={onTab2Change}
-              defaultActiveTabKey="profile" // Define "Perfil" como a aba ativa por padrão
-            >
-              <img className="rounded w-20 h-20" src={item.gravatarUrl} />
-              <span className="font-mono font-semibold">{item.name}</span>
-            </Card>
-          </>
+          <Card
+            key={item.id}
+            bordered={true}
+            style={{
+              width: "70%",
+            }}
+            tabList={tabListNoTitle}
+            activeTabKey={activeTabKey2}
+            onTabChange={onTab2Change}
+            defaultActiveTabKey="profile" // Define "Perfil" como a aba ativa por padrão
+          >
+            <img className="rounded w-20 h-20" src={item.gravatarUrl} />
+            <span className="font-mono font-semibold">{item.name}</span>
+          </Card>
         ))
       )}
     </Space>

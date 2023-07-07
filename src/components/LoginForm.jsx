@@ -15,6 +15,8 @@ export const LoginForm = () => {
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const { setName, setToken } = useContext(LoginContext);
   const { setId } = useContext(LoginContext);
+  const { setGravatar } = useContext(LoginContext);
+
   const navigate = useNavigate();
 
   const onFinish = async (values) => {
@@ -26,10 +28,12 @@ export const LoginForm = () => {
       setName(response.data.user.name);
       setToken(response.data.token);
       setId(response.data.token);
+      setGravatar(response.data.user.gravatarUrl)
       setShowSuccessAlert(true);
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("name", response.data.user.name);
       localStorage.setItem("id", response.data.user.id);
+      localStorage.setItem("gravatarUrl", response.data.gravatarUrl);
       navigate("/"); // Redirecionar para a rota '/'
     } catch (error) {
       form.resetFields();

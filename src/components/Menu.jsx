@@ -10,12 +10,15 @@ import { LoginContext } from "../App";
 import { useContext } from "react";
 
 export const Menu = () => {
+
+  const { gravatar } = useContext(LoginContext);
   const { token } = useContext(LoginContext);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("name");
     localStorage.removeItem("id");
+    localStorage.removeItem("gravatar");
   };
 
   const items = [
@@ -49,7 +52,7 @@ export const Menu = () => {
             label: `${localStorage.getItem("name")}`,
             key: "my-account",
             icon: (
-              <Avatar className="translate-y-3" size={36} src={"https://github.com/kevindsousa.png"} />
+              <Avatar className="translate-y-2" size={36} src={gravatar} />
             ),
           },
         ],
