@@ -31,7 +31,7 @@ export const ListUsers = () => {
     <Space
       direction="vertical"
       size={8}
-      className={`mx-6 my-6 ${!loading ? "flex flex-1" : "grid grid-cols-3"}`}
+      className={`mx-6 my-6 ${!loading ? "flex flex-1" : "grid grid-cols-3 gap-2"}`}
     >
       {!loading ? (
         <Loading /> // Renderizar o componente Loading se loading for true

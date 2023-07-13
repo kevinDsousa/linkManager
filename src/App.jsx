@@ -1,6 +1,7 @@
 import Routes from "./Routes";
 import { createContext, useEffect, useState } from "react";
 
+
 export const LoginContext = createContext(null);
 
 function App() {
@@ -14,7 +15,7 @@ function App() {
     const name = localStorage.getItem("name") || '';
     const token = localStorage.getItem("token") || '';
     const id = localStorage.getItem("id") || '';
-    const gravatar = localStorage.getItem("gravatar") || '';
+    const gravatar = localStorage.getItem("gravatarUrl") || '';
     setName(name);
     setToken(token)
     setId(id)

@@ -85,6 +85,7 @@ export const Menu = () => {
       theme="dark"
       mode="horizontal"
       items={generateLinks(items)}
+      className="flex items-center justify-center"
     ></MenuAnt>
   );
 };

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { LoginContext } from "../App";
 import { useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import jwt_decode from "jwt-decode";
 
 import login from "../assets/login.jpg";
 import api from "../services/api";
@@ -34,6 +35,8 @@ export const LoginForm = () => {
       localStorage.setItem("name", response.data.user.name);
       localStorage.setItem("id", response.data.user.id);
       localStorage.setItem("gravatarUrl", response.data.gravatarUrl);
+      const teste = jwt_decode(response.data.token)
+      console.log(teste);
       navigate("/"); // Redirecionar para a rota '/'
     } catch (error) {
       form.resetFields();

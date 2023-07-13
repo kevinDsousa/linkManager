@@ -23,16 +23,16 @@ export const CardUser = ({ gravatarUrl, name }) => {
   return (
     <Card
       bordered={true}
-      style={{
-        width: "70%",
-      }}
+      className="flex flex-col"
       tabList={tabListNoTitle}
       activeTabKey={activeTabKey2}
       onTabChange={onTab2Change}
       defaultActiveTabKey="profile"
     >
-      <img className="rounded w-20 h-20" src={gravatarUrl} alt={name} />
-      <span className="font-mono font-semibold">{name}</span>
+      <div className="flex flex-col items-center justify-center gap-5">
+        <img className="rounded w-1/3 h-1/3" src={gravatarUrl} alt={name} />
+        <span className="font-mono font-semibold">{name}</span>
+      </div>
     </Card>
   );
 };
