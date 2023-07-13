@@ -1,25 +1,37 @@
+import { useState, useContext, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { Avatar, Menu as MenuAnt } from "antd";
 import {
   HomeOutlined,
   LoginOutlined,
   LogoutOutlined,
   LinkOutlined,
 } from "@ant-design/icons";
-import { Avatar, Menu as MenuAnt } from "antd";
-import { Link } from "react-router-dom";
 import { LoginContext } from "../App";
-import { useContext } from "react";
 
 export const Menu = () => {
-
   const { gravatar } = useContext(LoginContext);
   const { token } = useContext(LoginContext);
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("name");
     localStorage.removeItem("id");
-    localStorage.removeItem("gravatar");
+    localStorage.removeItem("gravatarUrl");
+    setIsLoggedIn(false);
+    location.reload()
+    navigate("/");
   };
+
+  useEffect(() => {
+    if (token) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [token]);
 
   const items = [
     {
@@ -28,7 +40,7 @@ export const Menu = () => {
       to: "/",
       icon: <HomeOutlined />,
     },
-    !token
+    !isLoggedIn
       ? {
           label: "Logar",
           key: "login",

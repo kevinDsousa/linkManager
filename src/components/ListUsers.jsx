@@ -1,27 +1,12 @@
 import api from "../services/api";
-// import { Link } from "react-router-dom";
-import { Card, Space } from "antd";
+import { Space } from "antd";
 import { Loading } from "./Loading";
 
 import { useEffect, useState } from "react";
-
-const tabListNoTitle = [
-  {
-    key: "profile",
-    label: "Perfil",
-  },
-  {
-    key: "links",
-    label: "Links",
-  },
-];
+import { CardUser } from "./CardUser";
 
 export const ListUsers = () => {
-  const [activeTabKey2, setActiveTabKey2] = useState("profile"); // Definindo "profile" como a aba ativa por padrão
 
-  const onTab2Change = (key) => {
-    setActiveTabKey2(key);
-  };
 
   const [loading, setLoading] = useState(false); // Inicia com loading como true
   const [list, setList] = useState([]);
@@ -52,20 +37,7 @@ export const ListUsers = () => {
         <Loading /> // Renderizar o componente Loading se loading for true
       ) : (
         list.map((item) => (
-          <Card
-            key={item.id}
-            bordered={true}
-            style={{
-              width: "70%",
-            }}
-            tabList={tabListNoTitle}
-            activeTabKey={activeTabKey2}
-            onTabChange={onTab2Change}
-            defaultActiveTabKey="profile" // Define "Perfil" como a aba ativa por padrão
-          >
-            <img className="rounded w-20 h-20" src={item.gravatarUrl} />
-            <span className="font-mono font-semibold">{item.name}</span>
-          </Card>
+          <CardUser key={item.id} name={item.name} gravatarUrl={item.gravatarUrl}/>
         ))
       )}
     </Space>
