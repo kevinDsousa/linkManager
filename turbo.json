@@ -1,0 +1,28 @@
+{
+    "$schema": "https://turbo.build/schema.json",
+    "pipeline": {
+      "build": {
+        "dependsOn": ["^build"],
+        "env": [
+          "SOME_ENV_VAR"
+        ],
+        "outputs": ["dist/**"]
+      },
+      
+      "lint": {
+        "outputs": []
+      },
+      "dev": {
+        "cache": false
+      },
+      "sls:deploy": {
+        "cache": false
+      },
+      "sls:remove": {
+        "cache": false
+      },
+      "sls:invoke": {
+        "cache": false
+      }
+    }
+  }
