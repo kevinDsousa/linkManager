@@ -1,5 +1,18 @@
-export class Link {
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity('links')
+export class LinksEntity {
+  @PrimaryGeneratedColumn()
   readonly id!: number;
+
+  @Column()
   readonly url!: string;
-  readonly createdAt!: Date;
+
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  createdAt!: Date;
+
+  @BeforeInsert()
+  private setDefaultValues() {
+    this.createdAt = new Date();
+  }
 }
