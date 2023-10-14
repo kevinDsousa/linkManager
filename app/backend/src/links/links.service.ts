@@ -1,26 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { CreateLinkDto } from './dto/create-link.dto';
 import { UpdateLinkDto } from './dto/update-link.dto';
+import { LinksRepository } from './repositories/links.repository';
 
 @Injectable()
 export class LinksService {
-  create(createLinkDto: CreateLinkDto) {
-    return 'This action adds a new link';
+  constructor(private readonly repository: LinksRepository) {}
+
+  async create(createLinkDto: CreateLinkDto) {
+    return this.repository.create(createLinkDto);
   }
 
-  findAll() {
-    return `This action returns all links`;
+  async findAll() {
+    return this.repository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} link`;
+  async findOne(id: number) {
+    return this.repository.findOne(id);
   }
 
-  update(id: number, updateLinkDto: UpdateLinkDto) {
-    return `This action updates a #${id} link`;
+  async update(id: number, updateLinkDto: UpdateLinkDto) {
+    return this.repository.update(id, updateLinkDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} link`;
+  async remove(id: number) {
+    return this.repository.remove(id);
   }
 }
