@@ -12,7 +12,7 @@ export class UsersEntity {
   readonly email!: string;
 
   @Column()
-  readonly senha!: string;
+  readonly password!: string;
 
   @Column()
   readonly linkid!: number;

@@ -4,9 +4,17 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { LinksModule } from './links/links.module';
 import { DatabaseModule } from './database/database.module';
+import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [UsersModule, LinksModule, DatabaseModule],
+  imports: [
+    ConfigModule.forRoot(),
+    UsersModule,
+    LinksModule,
+    DatabaseModule,
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
