@@ -1,39 +1,14 @@
-version: '3'
+version: '3.1'
 
 services:
-  app:
-    build: .
-    entrypoint: .docker/entrypoint.sh
-    container_name: linkmanageraapi
-    ports:
-      - "3000:3000"
-      - "5555:5555"
-    volumes:
-      - .:/home/node/app
-    depends_on:
-      - db
-
   db:
-    build: .docker/postgres
-    container_name: linkmanageradb
+    build: .
+    container_name: linkmanager
     restart: always
-    tty: true
     ports:
-      - "5431:5432"
+      - '5432:5432'
     volumes:
       - .docker/dbdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=linksApilinkmanageraPgadmin
-
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: linkmanageraPgadmin
-    tty: true
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
-      - PGADMIN_DEFAULT_PASSWORD=admin
-    ports:
-      - "8000:80"
-    depends_on:
-      - db
+      - POSTGRES_DB=linkmanager
