@@ -4,17 +4,18 @@ import { UsersModule } from 'src/users/users.module';
 import { LoginValidationMiddleware } from './middlewares/login-validation.middleware';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
   imports: [
     UsersModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET_KEY,
-      signOptions: { expiresIn: process.env.JTW_EXPIRE_SECRET_KEY },
+      secret: process.env.SECRET_KEY || 'teste',
+      signOptions: { expiresIn: process.env.JTW_EXPIRE_SECRET_KEY || '1h' },
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, LocalStrategy],
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
