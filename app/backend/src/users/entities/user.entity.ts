@@ -1,5 +1,12 @@
 import { LinksEntity } from 'src/links/entities/link.entity';
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  JoinTable,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('users')
 export class UsersEntity {
@@ -15,6 +22,8 @@ export class UsersEntity {
   @Column()
   readonly password!: string;
 
+  @JoinTable()
+  @OneToMany(() => LinksEntity, (link) => link.url)
   @Column('json', { nullable: true })
   readonly links!: LinksEntity[];
 
