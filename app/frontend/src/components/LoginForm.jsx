@@ -1,47 +1,40 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Layout, Alert, Button, Form, Input } from "antd";
-import { useState } from "react";
-import { LoginContext } from "../App";
-import { useContext } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import jwt_decode from "jwt-decode";
-
+import { Layout, Button, Form, Input, Alert } from "antd";
+import Axios from "axios";
 import login from "../assets/login.jpg";
-import api from "../services/api";
+import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 const { Content } = Layout;
 
 export const LoginForm = () => {
-  const [form] = Form.useForm();
-  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-  const { setName, setToken } = useContext(LoginContext);
-  const { setId } = useContext(LoginContext);
-  const { setGravatar } = useContext(LoginContext);
-
-  const navigate = useNavigate();
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
 
   const onFinish = async (values) => {
     try {
-      const response = await api.post("/auth/login", {
+      const response = await Axios.post('http://localhost:3000/login', {
         email: values.email,
         password: values.password,
       });
-      setName(response.data.user.name);
-      setToken(response.data.token);
-      setId(response.data.token);
-      setGravatar(response.data.user.gravatarUrl)
-      setShowSuccessAlert(true);
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("name", response.data.user.name);
-      localStorage.setItem("id", response.data.user.id);
-      localStorage.setItem("gravatarUrl", response.data.gravatarUrl);
-      const teste = jwt_decode(response.data.token)
-      console.log(teste);
-      navigate("/"); // Redirecionar para a rota '/'
+      if (response.status === 200) {
+        setSuccess("Login realizado com sucesso");
+        localStorage.setItem("token", response.data.access_token);
+      } else {
+        setError("Credencial inválida. Verifique seu email e senha.");
+      }
     } catch (error) {
-      form.resetFields();
+      setError("Ocorreu um erro na requisição. Tente novamente mais tarde.");
     }
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSuccess(null);
+      setError(null);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [success, error]);
 
   return (
     <Layout>
@@ -54,7 +47,6 @@ export const LoginForm = () => {
             Fazer Login
           </h2>
           <Form
-            form={form}
             name="horizontal_login"
             layout="inline"
             onFinish={onFinish}
@@ -104,16 +96,24 @@ export const LoginForm = () => {
                   htmlType="button"
                   className="mt-5 bg-transparent border-none text-white w-full"
                   >
-                    <Link to="/">Retornar</Link>
+                    <Link to="/dashboard">Retornar</Link>
                   </Button>
                 </>
               )}
             </Form.Item>
           </Form>
-          {showSuccessAlert && (
+          {success && (
             <Alert
-              message="Login realizado com sucesso"
+              message={success}
               type="success"
+              showIcon
+              className="mt-4"
+            />
+          )}
+          {error && (
+            <Alert
+              message={error}
+              type="error"
               showIcon
               className="mt-4"
             />

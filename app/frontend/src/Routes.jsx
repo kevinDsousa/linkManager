@@ -1,11 +1,11 @@
 import { Routes as RoutesDom, Route } from "react-router-dom";
 import { LoginForm } from "./components/LoginForm";
-// import { PerfilUser } from "./components/PerfilUsers";
 import { NotFound } from "./components/NotFound";
 import { LoginContext } from "./App";
 import { useContext } from "react";
 import { Dashboard } from "./layouts/Dashboard";
 import { PerfilUser } from "./components/PerfilUser";
+import { Home } from "./layouts/Home";
 
 function Routes() {
   const { token } = useContext(LoginContext);
@@ -19,7 +19,7 @@ function Routes() {
         </>
       ) : (
         <>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginForm />} />
         </>
       )}
