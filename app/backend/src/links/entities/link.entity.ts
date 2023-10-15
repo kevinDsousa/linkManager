@@ -8,6 +8,9 @@ export class LinksEntity {
   @Column()
   readonly url!: string;
 
+  @Column({ default: true })
+  readonly isActive!: boolean;
+
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   createdAt!: Date;
 

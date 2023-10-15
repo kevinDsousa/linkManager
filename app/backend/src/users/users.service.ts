@@ -1,32 +1,56 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UsersRepository } from './repositories/users.repository';
+import { Repository } from 'typeorm';
+import { UsersEntity } from './entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly repository: UsersRepository) {}
+  constructor(
+    @InjectRepository(UsersEntity)
+    private readonly repository: Repository<UsersEntity>,
+  ) {}
 
-  findbyEmail(email: string) {
+  async findbyEmail(email: string) {
     return email;
   }
-  create(createUserDto: CreateUserDto) {
-    return this.repository.create(createUserDto);
+  async create(createUserDto: CreateUserDto) {
+    const user = await this.repository.create(createUserDto);
+    return this.repository.save(user);
   }
 
-  findAll() {
-    return this.repository.findAll();
+  async findAll() {
+    return await this.repository.find();
   }
 
-  findOne(id: number) {
-    return this.repository.findOne(id);
+  async findOne(id: number) {
+    const user = await this.repository.findOne({
+      where: { id },
+    });
+    if (!user) {
+      throw new NotFoundException(`Users id ${id} not found`);
+    }
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return this.repository.update(id, updateUserDto);
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const user = await this.repository.preload({
+      id,
+      ...updateUserDto,
+    });
+    if (!user) {
+      throw new NotFoundException(`Users id ${id} not found`);
+    }
+    return this.repository.save(user);
   }
 
-  remove(id: number) {
-    return this.repository.remove(id);
+  async remove(id: number) {
+    const user = await this.repository.findOne({
+      where: { id },
+    });
+    if (!user) {
+      throw new NotFoundException(`Users id ${id} not found`);
+    }
+    return this.repository.remove(user);
   }
 }

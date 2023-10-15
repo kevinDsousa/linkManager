@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
-import * as bcrypt from 'bcrypt';
+// import * as bcrypt from 'bcrypt';
 import { UserPayLoad } from './models/user-payload';
 import { UserToken } from './models/user-token';
 import { UsersEntity } from 'src/users/entities/user.entity';
@@ -27,18 +27,18 @@ export class AuthService {
     };
   }
 
-  async validateUser(email: string, password: string) {
-    const user = await this.userService.findbyEmail(email);
+  // async validateUser(email: string, password: string) {
+  //   const user = await this.userService.findbyEmail(email);
 
-    if (user) {
-      const isPasswordvalid = await bcrypt.compare(password, user.password);
-      if (isPasswordvalid) {
-        return {
-          ...user,
-          password: undefined,
-        };
-      }
-    }
-    throw new Error('Email e ou senha incorreta');
-  }
+  //   if (user) {
+  //     const isPasswordvalid = await bcrypt.compare(password, user.password);
+  //     if (isPasswordvalid) {
+  //       return {
+  //         ...user,
+  //         password: undefined,
+  //       };
+  //     }
+  //   }
+  //   throw new Error('Email e ou senha incorreta');
+  // }
 }

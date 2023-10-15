@@ -1,29 +1,53 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateLinkDto } from './dto/create-link.dto';
 import { UpdateLinkDto } from './dto/update-link.dto';
-import { LinksRepository } from './repositories/links.repository';
+import { Repository } from 'typeorm';
+import { LinksEntity } from './entities/link.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class LinksService {
-  constructor(private readonly repository: LinksRepository) {}
+  constructor(
+    @InjectRepository(LinksEntity)
+    private readonly repository: Repository<LinksEntity>,
+  ) {}
 
   async create(createLinkDto: CreateLinkDto) {
-    return this.repository.create(createLinkDto);
+    const link = await this.repository.create(createLinkDto);
+    return this.repository.save(link);
   }
 
   async findAll() {
-    return this.repository.findAll();
+    return await this.repository.find();
   }
 
   async findOne(id: number) {
-    return this.repository.findOne(id);
+    const links = await this.repository.findOne({
+      where: { id },
+    });
+    if (!links) {
+      throw new NotFoundException(`Links id ${id} not found`);
+    }
   }
 
   async update(id: number, updateLinkDto: UpdateLinkDto) {
-    return this.repository.update(id, updateLinkDto);
+    const links = await this.repository.preload({
+      id,
+      ...updateLinkDto,
+    });
+    if (!links) {
+      throw new NotFoundException(`Links id ${id} not found`);
+    }
+    return this.repository.save(links);
   }
 
   async remove(id: number) {
-    return this.repository.remove(id);
+    const links = await this.repository.findOne({
+      where: { id },
+    });
+    if (!links) {
+      throw new NotFoundException(`Links id ${id} not found`);
+    }
+    return this.repository.remove(links);
   }
 }

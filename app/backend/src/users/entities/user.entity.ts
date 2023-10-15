@@ -1,3 +1,4 @@
+import { LinksEntity } from 'src/links/entities/link.entity';
 import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
@@ -14,8 +15,8 @@ export class UsersEntity {
   @Column()
   readonly password!: string;
 
-  @Column()
-  readonly linkid!: number;
+  @Column('json', { nullable: true })
+  readonly links!: LinksEntity[];
 
   @Column()
   createdAt!: Date;
