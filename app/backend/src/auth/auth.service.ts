@@ -22,6 +22,8 @@ export class AuthService {
           sub: user.id,
           email: user.email,
           name: user.name,
+          gravatarUrl: user.gravatarUrl,
+          links: [],
         };
         const jwtToken = this.jwtService.sign(payload);
 
