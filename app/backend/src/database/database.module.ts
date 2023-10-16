@@ -6,7 +6,7 @@ import { DataSourceOptions } from 'typeorm';
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
-  url: 'postgres://mtxrfcun:AvqBKFnV7iXSuaVptrAvVa28jq3f5qdI@trumpet.db.elephantsql.com/mtxrfcun',
+  url: process.env.URL,
   entities: [LinksEntity, UsersEntity],
   synchronize: true,
 };
