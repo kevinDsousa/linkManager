@@ -2,7 +2,7 @@ import axios from 'axios';
 import { message } from 'antd';
 
 const api = axios.create({
-  baseURL: 'https://usuarios.ronierlima.dev',
+  baseURL: 'http://localhost:3000',
 });
 
 api.interceptors.response.use(

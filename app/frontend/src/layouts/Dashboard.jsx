@@ -1,6 +1,6 @@
 import Layout, { Header } from "antd/es/layout/layout";
 import { Menu } from "../components/Menu";
-import { ListUsers } from "../components/ListUsers";
+import { CardUser } from "../components/CardUser";
 
 export const Dashboard = () => {
   return (
@@ -9,7 +9,7 @@ export const Dashboard = () => {
         <Header>
           <Menu />
         </Header>
-        <ListUsers />
+        <CardUser />
       </Layout>
     </div>
   );

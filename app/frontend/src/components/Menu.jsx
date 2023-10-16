@@ -17,12 +17,9 @@ export const Menu = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("name");
-    localStorage.removeItem("id");
-    localStorage.removeItem("gravatarUrl");
     setIsLoggedIn(false);
-    location.reload()
     navigate("/");
+    location.reload()
   };
 
   useEffect(() => {
@@ -37,7 +34,7 @@ export const Menu = () => {
     {
       label: "Inicio",
       key: "mail",
-      to: "/",
+      to: "/dashboard",
       icon: <HomeOutlined />,
     },
     !isLoggedIn

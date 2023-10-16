@@ -1,30 +1,34 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Layout, Button, Form, Input, Alert } from "antd";
-import Axios from "axios";
 import login from "../assets/login.jpg";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import api from "../services/api";
 
 const { Content } = Layout;
 
 export const LoginForm = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const navigate = useNavigate();
 
   const onFinish = async (values) => {
     try {
-      const response = await Axios.post('http://localhost:3000/login', {
+      const response = await api.post('/login', {
         email: values.email,
         password: values.password,
       });
       if (response.status === 200) {
         setSuccess("Login realizado com sucesso");
         localStorage.setItem("token", response.data.access_token);
+        navigate("/dashboard");
+        location.reload()
+        
       } else {
         setError("Credencial inválida. Verifique seu email e senha.");
       }
     } catch (error) {
-      setError("Ocorreu um erro na requisição. Tente novamente mais tarde.");
+      setError("Login inválido, usuário ou senha incorreta");
     }
   };
 
@@ -96,7 +100,7 @@ export const LoginForm = () => {
                   htmlType="button"
                   className="mt-5 bg-transparent border-none text-white w-full"
                   >
-                    <Link to="/dashboard">Retornar</Link>
+                    {/* <Link to="/">Retornar</Link> */}
                   </Button>
                 </>
               )}
