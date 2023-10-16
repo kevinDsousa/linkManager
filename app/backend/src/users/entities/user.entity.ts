@@ -20,6 +20,9 @@ export class UsersEntity {
   readonly email!: string;
 
   @Column()
+  readonly gravatarUrl?: string;
+
+  @Column()
   readonly password!: string;
 
   @JoinTable()

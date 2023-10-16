@@ -20,6 +20,9 @@ export class CreateUserDto {
   @IsNotEmpty()
   readonly email!: string;
 
+  @IsString()
+  readonly gravatarUrl?: string;
+
   @ApiProperty({
     description: 'Senha do usuário',
     example: 'FS11melhorturma',
