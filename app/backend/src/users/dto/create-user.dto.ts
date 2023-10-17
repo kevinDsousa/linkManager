@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -22,6 +22,9 @@ export class CreateUserDto {
 
   @IsString()
   readonly gravatarUrl?: string;
+
+  @IsBoolean()
+  readonly admin?: boolean;
 
   @ApiProperty({
     description: 'Senha do usuário',

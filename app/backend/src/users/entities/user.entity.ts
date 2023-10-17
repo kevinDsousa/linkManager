@@ -25,6 +25,9 @@ export class UsersEntity {
   @Column()
   readonly password!: string;
 
+  @Column()
+  readonly admin!: boolean;
+
   @JoinTable()
   @OneToMany(() => LinksEntity, (link) => link.url)
   @Column('json', { nullable: true })

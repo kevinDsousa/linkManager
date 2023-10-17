@@ -1,11 +1,11 @@
-import { useState , useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Avatar, Menu as MenuAnt } from "antd";
 import {
   HomeOutlined,
   LogoutOutlined,
   UserAddOutlined,
-  UsergroupAddOutlined
+  UsergroupAddOutlined,
 } from "@ant-design/icons";
 import jwt_decode from "jwt-decode";
 import { LoginContext } from "../App";
@@ -13,7 +13,7 @@ import { LoginContext } from "../App";
 export const Menu = () => {
   const { token } = useContext(LoginContext);
   const navigate = useNavigate();
-  const [gravatarUrl, setGravatarUrl] = useState(""); 
+  const [gravatarUrl, setGravatarUrl] = useState("");
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -39,9 +39,7 @@ export const Menu = () => {
     }
   }, [token]);
 
-  const emailFromToken = token ? decodeToken(token).email : "";
-
-  const isKevinDiego = emailFromToken === "kevindiego@gmail.com";
+  const isAdmin = token ? decodeToken(token).admin : false;
 
   const items = [
     {
@@ -50,17 +48,17 @@ export const Menu = () => {
       to: "/dashboard",
       icon: <HomeOutlined />,
     },
-    isKevinDiego && {
-      label: "Novo usuário",
-      key: "newusers",
-      to: "/newusers",
-      icon: <UserAddOutlined />,
-    },
-    {
+    isAdmin && {
       label: "Listar usuários",
       key: "listusers",
       to: "/listusers",
       icon: <UsergroupAddOutlined />,
+    },
+    {
+      label: "Novo usuário",
+      key: "newusers",
+      to: "/newusers",
+      icon: <UserAddOutlined />,
     },
     {
       label: "Sair",
