@@ -19,6 +19,8 @@
     "build": "turbo run build"
   },
   "devDependencies": {
+    "dotenv-cli": "^7.0.0",
+    "dotenv": "^16.3.1",
     "eslint-config-custom": "*",
     "prettier": "latest",
     "turbo": "latest"

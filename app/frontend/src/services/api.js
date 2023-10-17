@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { message } from 'antd';
 
+const BASEURL = 'http://localhost';
+
 const api = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: `${BASEURL}`,
 });
 
 api.interceptors.response.use(

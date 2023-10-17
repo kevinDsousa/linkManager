@@ -10,8 +10,8 @@ import { LocalStrategy } from './strategies/local.strategy';
   imports: [
     UsersModule,
     JwtModule.register({
-      secret: process.env.SECRET_KEY || 'teste',
-      signOptions: { expiresIn: process.env.JTW_EXPIRE_SECRET_KEY || '1h' },
+      secret: process.env.SECRET_KEY,
+      signOptions: { expiresIn: process.env.JTW_EXPIRE_SECRET_KEY },
     }),
   ],
   controllers: [AuthController],
