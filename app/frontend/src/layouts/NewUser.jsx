@@ -1,5 +1,5 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Layout, Button, Form, Input, Alert } from "antd";
+import { Layout, Button, Form, Input, Alert, Radio } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import api from "../services/api";
@@ -19,9 +19,10 @@ export const Newuser = () => {
         email: values.email,
         gravatarUrl: values.gravatarUrl,
         password: values.password,
+        admin: values.admin === "admin" ? true : false,
       });
       if (response.status === 200) {
-        setSuccess("cadastro de novo usuário realizado com sucesso");
+        setSuccess("Cadastro de novo usuário realizado com sucesso");
         localStorage.setItem("token", response.data.access_token);
         navigate("/dashboard");
         location.reload();
@@ -65,9 +66,7 @@ export const Newuser = () => {
                 },
               ]}
             >
-              <Input
-                placeholder="Nome"
-              />
+              <Input placeholder="Nome" />
             </Form.Item>
             <Form.Item
               name="email"
@@ -84,12 +83,8 @@ export const Newuser = () => {
                 autoComplete="current-email"
               />
             </Form.Item>
-            <Form.Item
-              name="gravatarUrl" 
-            >
-              <Input
-                placeholder="URL do Gravatar"
-              />
+            <Form.Item name="gravatarUrl">
+              <Input placeholder="URL do Gravatar" />
             </Form.Item>
             <Form.Item
               name="password"
@@ -106,6 +101,10 @@ export const Newuser = () => {
                 autoComplete="current-password"
               />
             </Form.Item>
+            <span className="text-white ">Admin</span>
+              <Radio.Group>
+                <Radio value="admin" className="text-white font-mono text-lg">Sim</Radio>
+              </Radio.Group>
             <Form.Item shouldUpdate>
               {() => (
                 <>

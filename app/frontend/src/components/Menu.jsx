@@ -14,6 +14,7 @@ export const Menu = () => {
   const { token } = useContext(LoginContext);
   const navigate = useNavigate();
   const [gravatarUrl, setGravatarUrl] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -36,10 +37,9 @@ export const Menu = () => {
       const decodedToken = decodeToken(token);
       const gravatarUrl = decodedToken.gravatarUrl;
       setGravatarUrl(gravatarUrl);
+      setIsAdmin(decodedToken.admin === true); // Verifica se o usuário é admin
     }
   }, [token]);
-
-  const isAdmin = token ? decodeToken(token).admin : false;
 
   const items = [
     {
@@ -54,7 +54,7 @@ export const Menu = () => {
       to: "/listusers",
       icon: <UsergroupAddOutlined />,
     },
-    {
+    isAdmin && {
       label: "Novo usuário",
       key: "newusers",
       to: "/newusers",
