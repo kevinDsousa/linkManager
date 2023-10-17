@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Layout } from "antd";
 import { CardUser } from "./CardUser";
 import jwt_decode from "jwt-decode";
+import { LoginContext } from "../App";
 
 export const PerfilUser = () => {
   const [userData, setUserData] = useState({ name: "", gravatarUrl: "", email: '', links: "" });
+  const { token } = useContext(LoginContext);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-
     if (token) {
       try {
         const decoded = jwt_decode(token);
@@ -31,14 +31,14 @@ export const PerfilUser = () => {
         console.error("Erro ao decodificar o token:", error);
       }
     } else {
-      console.log("Token não encontrado em localStorage.");
+      console.log("Token não encontrado.");
     }
-  }, []);
+  }, [token]);
 
   return (
     <>
       <Layout className="w-1/2 m-auto mt-10 h-screen">
-        <CardUser name={userData.name} email={userData.email} gravatarUrl={userData.gravatarUrl} links={userData.links}/>
+        <CardUser name={userData.name} email={userData.email} gravatarUrl={userData.gravatarUrl} links={userData.links} />
       </Layout>
     </>
   );

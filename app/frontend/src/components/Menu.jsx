@@ -1,34 +1,46 @@
-import { useState, useContext, useEffect } from "react";
+import { useState , useContext, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Avatar, Menu as MenuAnt } from "antd";
 import {
   HomeOutlined,
-  LoginOutlined,
   LogoutOutlined,
-  LinkOutlined,
+  UserAddOutlined,
 } from "@ant-design/icons";
+import jwt_decode from "jwt-decode";
 import { LoginContext } from "../App";
 
 export const Menu = () => {
-  const { gravatar } = useContext(LoginContext);
   const { token } = useContext(LoginContext);
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [gravatarUrl, setGravatarUrl] = useState(""); 
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    setIsLoggedIn(false);
     navigate("/");
-    location.reload()
+    location.reload();
+  };
+
+  const decodeToken = (token) => {
+    try {
+      const decoded = jwt_decode(token);
+      return decoded;
+    } catch (error) {
+      console.error("Erro ao decodificar o token:", error);
+      return {};
+    }
   };
 
   useEffect(() => {
     if (token) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
+      const decodedToken = decodeToken(token);
+      const gravatarUrl = decodedToken.gravatarUrl;
+      setGravatarUrl(gravatarUrl);
     }
   }, [token]);
+
+  const emailFromToken = token ? decodeToken(token).email : "";
+
+  const isKevinDiego = emailFromToken === "kevindiego@gmail.com";
 
   const items = [
     {
@@ -37,34 +49,22 @@ export const Menu = () => {
       to: "/dashboard",
       icon: <HomeOutlined />,
     },
-    !isLoggedIn
-      ? {
-          label: "Logar",
-          key: "login",
-          to: "/login",
-          icon: <LoginOutlined />,
-        }
-      : [
-          {
-            label: "Sair",
-            key: "exit",
-            onClick: handleLogout,
-            icon: <LogoutOutlined />,
-          },
-          localStorage.getItem("id") && {
-            label: "Meus Links",
-            key: "profile",
-            to: `/users/${localStorage.getItem("id")}`,
-            icon: <LinkOutlined />,
-          },
-          localStorage.getItem("id") && {
-            label: `${localStorage.getItem("name")}`,
-            key: "my-account",
-            icon: (
-              <Avatar className="translate-y-2" size={36} src={gravatar} />
-            ),
-          },
-        ],
+    isKevinDiego && {
+      label: "Novo usuário",
+      key: "newuser",
+      to: "/newuser",
+      icon: <UserAddOutlined />,
+    },
+    {
+      label: "Sair",
+      key: "exit",
+      onClick: handleLogout,
+      icon: <LogoutOutlined />,
+    },
+    {
+      key: "my-account",
+      icon: <Avatar className="translate-y-2" size={36} src={gravatarUrl} />,
+    },
   ];
 
   function generateLinks(items) {
@@ -73,7 +73,7 @@ export const Menu = () => {
       .filter(Boolean)
       .map((item) => ({
         ...item,
-        label: <Link to={item.to}>{item.label}</Link>,
+        label: item.to ? <Link to={item.to}>{item.label}</Link> : item.label,
       }));
   }
 
@@ -86,3 +86,5 @@ export const Menu = () => {
     ></MenuAnt>
   );
 };
+
+export default Menu;
