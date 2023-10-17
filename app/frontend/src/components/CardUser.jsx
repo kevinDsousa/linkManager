@@ -1,18 +1,30 @@
 import { Card, Input, Button, List } from "antd";
 import { useState } from "react";
+import api from "../services/api";
 
 const { Item } = List;
 
+// eslint-disable-next-line react/prop-types
 export const CardUser = ({ gravatarUrl, name, email, links }) => {
   const [activeTabKey, setActiveTabKey] = useState("profile");
   const [newLink, setNewLink] = useState("");
   const [editableLinkId, setEditableLinkId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const onTabChange = (key) => {
     setActiveTabKey(key);
   };
 
-  const handleAddLink = () => {
+  const handleAddLink = async () => {
+    try {
+      setLoading(true);
+      await api.post("/links", { url: newLink });
+      setNewLink(""); 
+    } catch (error) {
+      console.error("Erro ao adicionar o link:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleEditLink = (linkId) => {
@@ -24,6 +36,7 @@ export const CardUser = ({ gravatarUrl, name, email, links }) => {
   };
 
   const handleDeleteLink = (linkId) => {
+
   };
 
   return (
@@ -57,7 +70,9 @@ export const CardUser = ({ gravatarUrl, name, email, links }) => {
             value={newLink}
             onChange={(e) => setNewLink(e.target.value)}
           />
-          <Button onClick={handleAddLink}>Adicionar</Button>
+          <Button onClick={handleAddLink} loading={loading}>
+            Adicionar
+          </Button>
           <List
             dataSource={links}
             renderItem={(link, index) => (
