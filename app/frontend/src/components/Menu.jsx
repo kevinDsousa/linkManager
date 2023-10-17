@@ -5,6 +5,7 @@ import {
   HomeOutlined,
   LogoutOutlined,
   UserAddOutlined,
+  UsergroupAddOutlined
 } from "@ant-design/icons";
 import jwt_decode from "jwt-decode";
 import { LoginContext } from "../App";
@@ -51,9 +52,15 @@ export const Menu = () => {
     },
     isKevinDiego && {
       label: "Novo usuário",
-      key: "newuser",
-      to: "/newuser",
+      key: "newusers",
+      to: "/newusers",
       icon: <UserAddOutlined />,
+    },
+    {
+      label: "Listar usuários",
+      key: "listusers",
+      to: "/listusers",
+      icon: <UsergroupAddOutlined />,
     },
     {
       label: "Sair",
