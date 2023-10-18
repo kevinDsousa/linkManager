@@ -14,7 +14,7 @@ const ListUser = () => {
     setIsModalVisible(true);
     setUserIdToDelete(userId);
   };
-  
+
   const handleCancel = () => {
     setIsModalVisible(false);
     setUserIdToDelete(null);
@@ -30,7 +30,7 @@ const ListUser = () => {
         })
         .then(() => {
           setIsModalVisible(false);
-          setUserIdToDelete(null)
+          setUserIdToDelete(null);
           api
             .get("/users", {
               headers: {
@@ -130,6 +130,14 @@ const ListUser = () => {
         onCancel={handleCancel}
         okText="Confirmar"
         cancelText="Cancelar"
+        okButtonProps={{
+          className: "custom-ok-button",
+          style: { background: "green", color: "white" }, 
+        }}
+        cancelButtonProps={{
+          className: "custom-cancel-button", 
+          style: { background: "red", color: "white" },
+        }}
       >
         Tem certeza de que deseja excluir este usuário?
       </Modal>

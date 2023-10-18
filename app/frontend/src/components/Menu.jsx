@@ -18,6 +18,7 @@ export const Menu = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("userInfo");
     navigate("/");
     location.reload();
   };
@@ -37,7 +38,7 @@ export const Menu = () => {
       const decodedToken = decodeToken(token);
       const gravatarUrl = decodedToken.gravatarUrl;
       setGravatarUrl(gravatarUrl);
-      setIsAdmin(decodedToken.admin === true); // Verifica se o usuário é admin
+      setIsAdmin(decodedToken.admin === true); 
     }
   }, [token]);
 

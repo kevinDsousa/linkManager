@@ -96,6 +96,13 @@ export const LoginForm = () => {
                   >
                     Acessar conta
                   </Button>
+                  <Button
+                    type="link"
+                    href="/"
+                    className="text-white flex items-center justify-center"
+                  >
+                    Voltar
+                  </Button>
                   <Button 
                   htmlType="button"
                   className="mt-5 bg-transparent border-none text-white w-full"

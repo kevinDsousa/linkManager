@@ -1,11 +1,13 @@
 import { Card, Input, Button, List } from "antd";
 import { useState } from "react";
 import api from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 const { Item } = List;
 
 // eslint-disable-next-line react/prop-types
 export const CardUser = ({ gravatarUrl, name, email, links }) => {
+  const navigate = useNavigate();
   const [activeTabKey, setActiveTabKey] = useState("profile");
   const [newLink, setNewLink] = useState("");
   const [editableLinkId, setEditableLinkId] = useState(null);
@@ -19,7 +21,7 @@ export const CardUser = ({ gravatarUrl, name, email, links }) => {
     try {
       setLoading(true);
       await api.post("/links", { url: newLink });
-      setNewLink(""); 
+      setNewLink("");
     } catch (error) {
       console.error("Erro ao adicionar o link:", error);
     } finally {
@@ -35,8 +37,10 @@ export const CardUser = ({ gravatarUrl, name, email, links }) => {
     setEditableLinkId(null);
   };
 
-  const handleDeleteLink = (linkId) => {
+  const handleDeleteLink = (linkId) => {};
 
+  const handleShareProfile = () => {
+    navigate("/")
   };
 
   return (
@@ -57,9 +61,12 @@ export const CardUser = ({ gravatarUrl, name, email, links }) => {
     >
       {activeTabKey === "profile" && (
         <div className="flex flex-col items-center justify-center gap-5">
-          <img className="rounded w-1/3 h-1/3" src={gravatarUrl} alt={name} />
+          <img className="rounded w-40 h-40" src={gravatarUrl} alt={name} />
           <span className="font-mono font-semibold">Name: {name}</span>
           <span className="font-mono font-semibold">Email: {email}</span>
+          <Button type="link" onClick={handleShareProfile}>
+            Compartilhar Perfil
+          </Button>
         </div>
       )}
 
@@ -80,13 +87,19 @@ export const CardUser = ({ gravatarUrl, name, email, links }) => {
                 {editableLinkId === index ? (
                   <>
                     <Input value={link} onChange={(e) => console.log(e)} />
-                    <Button onClick={() => handleSaveLink(index)}>Salvar</Button>
+                    <Button onClick={() => handleSaveLink(index)}>
+                      Salvar
+                    </Button>
                   </>
                 ) : (
                   <>
                     {link}
-                    <Button onClick={() => handleEditLink(index)}>Editar</Button>
-                    <Button onClick={() => handleDeleteLink(index)}>Excluir</Button>
+                    <Button onClick={() => handleEditLink(index)}>
+                      Editar
+                    </Button>
+                    <Button onClick={() => handleDeleteLink(index)}>
+                      Excluir
+                    </Button>
                   </>
                 )}
               </Item>

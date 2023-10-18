@@ -16,6 +16,7 @@ function Routes() {
     <RoutesDom>
       {token ? (
         <>
+          <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/users/:id" element={<PerfilUser />} />
           <Route path="/newusers" element={<Newuser />} />
@@ -23,7 +24,7 @@ function Routes() {
         </>
       ) : (
         <>
-          <Route path="/" element={<Home/>} />
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginForm />} />
         </>
       )}
