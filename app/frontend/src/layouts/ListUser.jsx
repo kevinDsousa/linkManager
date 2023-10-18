@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Table, Button, Space, Modal } from "antd";
 import api from "../services/api";
 import Menu from "../components/Menu";
+import EditUserModal from "./EditUserModal";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 const ListUser = () => {
@@ -9,6 +10,8 @@ const ListUser = () => {
   const [userIdToDelete, setUserIdToDelete] = useState(null);
   const [data, setData] = useState([]);
   const token = localStorage.getItem("token");
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [userToEdit, setUserToEdit] = useState(null);
 
   const showModal = (userId) => {
     setIsModalVisible(true);
@@ -18,6 +21,11 @@ const ListUser = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
     setUserIdToDelete(null);
+  };
+
+  const handleEditCancel = () => {
+    setIsEditModalVisible(false);
+    setUserToEdit(null);
   };
 
   const handleDeleteConfirm = () => {
@@ -31,18 +39,7 @@ const ListUser = () => {
         .then(() => {
           setIsModalVisible(false);
           setUserIdToDelete(null);
-          api
-            .get("/users", {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            })
-            .then((response) => {
-              setData(response.data);
-            })
-            .catch((error) => {
-              console.error("Erro ao buscar os dados:", error);
-            });
+          loadUserData();
         })
         .catch((error) => {
           console.error("Erro ao excluir o usuário:", error);
@@ -50,7 +47,7 @@ const ListUser = () => {
     }
   };
 
-  useEffect(() => {
+  const loadUserData = () => {
     api
       .get("/users", {
         headers: {
@@ -58,14 +55,26 @@ const ListUser = () => {
         },
       })
       .then((response) => {
-        setData(response.data);
+        const usersWithKeys = response.data.map((user) => ({
+          ...user,
+          key: user.id,
+        }));
+        setData(usersWithKeys);
       })
       .catch((error) => {
         console.error("Erro ao buscar os dados:", error);
       });
+  };
+
+  useEffect(() => {
+    loadUserData();
   }, [token]);
 
   const columns = [
+    {
+      dataIndex: "id",
+      key: "id",
+    },
     {
       title: "Name",
       dataIndex: "name",
@@ -89,13 +98,14 @@ const ListUser = () => {
       ),
     },
     {
+      id: "actions",
       title: "Ações",
       key: "actions",
       render: (text, record) => (
         <Space size="middle">
           <Button
             type="link"
-            className="bg-orange-500  text-white flex items-center justify-center w-10"
+            className="bg-orange-500 text-white flex items-center justify-center w-10"
             onClick={() => handleEdit(record)}
           >
             <EditOutlined />
@@ -113,7 +123,8 @@ const ListUser = () => {
   ];
 
   const handleEdit = (record) => {
-    console.log(`Editar: ${record.name}`);
+    setUserToEdit(record);
+    setIsEditModalVisible(true);
   };
 
   return (
@@ -125,22 +136,29 @@ const ListUser = () => {
       <Table className="mx-10 my-5" dataSource={data} columns={columns} />
       <Modal
         title="Confirmar Exclusão"
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={handleDeleteConfirm}
         onCancel={handleCancel}
         okText="Confirmar"
         cancelText="Cancelar"
         okButtonProps={{
           className: "custom-ok-button",
-          style: { background: "green", color: "white" }, 
+          style: { background: "green", color: "white" },
         }}
         cancelButtonProps={{
-          className: "custom-cancel-button", 
+          className: "custom-cancel-button",
           style: { background: "red", color: "white" },
         }}
       >
         Tem certeza de que deseja excluir este usuário?
       </Modal>
+      <EditUserModal
+        visible={isEditModalVisible}
+        onCancel={handleEditCancel}
+        userToEdit={userToEdit}
+        token={token}
+        onUserUpdated={loadUserData}
+      />
     </>
   );
 };
