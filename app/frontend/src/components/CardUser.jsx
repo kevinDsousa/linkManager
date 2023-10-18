@@ -1,46 +1,80 @@
 import { Card, Input, Button, List } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
+import jwtDecode from "jwt-decode"; // Importe a biblioteca jwt-decode
 
 const { Item } = List;
 
-// eslint-disable-next-line react/prop-types
-export const CardUser = ({ gravatarUrl, name, email, links }) => {
+export const CardUser = () => {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
   const [activeTabKey, setActiveTabKey] = useState("profile");
   const [newLink, setNewLink] = useState("");
   const [editableLinkId, setEditableLinkId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [links, setLinks] = useState([]);
+  const token = localStorage.getItem("token");
+  // Decodifique o token para obter o ID do usuário
+  const decodedToken = jwtDecode(token);
+  const userId = decodedToken.sub;
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/"); // Redirecione para a página inicial ou trate de forma apropriada
+    } else {
+      // Realize a solicitação para obter os detalhes do usuário com base no ID fornecido
+      api.get(`/users/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((response) => {
+          setUser(response.data);
+        })
+        .catch((error) => {
+          console.error("Erro ao buscar detalhes do usuário:", error);
+        });
+    }
+  }, [userId, token, navigate]);
 
   const onTabChange = (key) => {
     setActiveTabKey(key);
   };
 
   const handleAddLink = async () => {
-    try {
-      setLoading(true);
-      await api.post("/links", { url: newLink });
-      setNewLink("");
-    } catch (error) {
-      console.error("Erro ao adicionar o link:", error);
-    } finally {
-      setLoading(false);
-    }
+    // Lógica para adicionar um novo link, similar à implementação anterior
   };
 
   const handleEditLink = (linkId) => {
-    setEditableLinkId(linkId);
+    // Lógica para editar um link
   };
 
   const handleSaveLink = (linkId) => {
-    setEditableLinkId(null);
+    // Lógica para salvar um link editado
   };
 
-  const handleDeleteLink = (linkId) => {};
+  const handleDeleteLink = async (linkId) => {
+    // Lógica para excluir um link
+  };
 
   const handleShareProfile = () => {
-    navigate("/")
+    navigate("/");
+  };
+
+  // Quando o botão "Ver Meus Links" é clicado, faça a solicitação e atualize os links
+  const handleViewMyLinks = () => {
+    api.get(`/users/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        setLinks(response.data);
+      })
+      .catch((error) => {
+        console.error("Erro ao buscar links do usuário:", error);
+      });
   };
 
   return (
@@ -59,52 +93,64 @@ export const CardUser = ({ gravatarUrl, name, email, links }) => {
       activeTabKey={activeTabKey}
       onTabChange={onTabChange}
     >
-      {activeTabKey === "profile" && (
-        <div className="flex flex-col items-center justify-center gap-5">
-          <img className="rounded w-40 h-40" src={gravatarUrl} alt={name} />
-          <span className="font-mono font-semibold">Name: {name}</span>
-          <span className="font-mono font-semibold">Email: {email}</span>
-          <Button type="link" onClick={handleShareProfile}>
-            Compartilhar Perfil
-          </Button>
-        </div>
-      )}
-
-      {activeTabKey === "links" && (
+      {user && (
         <div>
-          <Input
-            placeholder="Adicionar novo link"
-            value={newLink}
-            onChange={(e) => setNewLink(e.target.value)}
-          />
-          <Button onClick={handleAddLink} loading={loading}>
-            Adicionar
-          </Button>
-          <List
-            dataSource={links}
-            renderItem={(link, index) => (
-              <Item>
-                {editableLinkId === index ? (
-                  <>
-                    <Input value={link} onChange={(e) => console.log(e)} />
-                    <Button onClick={() => handleSaveLink(index)}>
-                      Salvar
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    {link}
-                    <Button onClick={() => handleEditLink(index)}>
-                      Editar
-                    </Button>
-                    <Button onClick={() => handleDeleteLink(index)}>
-                      Excluir
-                    </Button>
-                  </>
+          {activeTabKey === "profile" && (
+            <div className="flex flex-col items-center justify-center gap-5">
+              <img className="rounded w-40 h-40" src={user.gravatarUrl} alt={user.name} />
+              <span className="font-mono font-semibold">Name: {user.name}</span>
+              <span className="font-mono font-semibold">Email: {user.email}</span>
+              <Button type="link" onClick={handleShareProfile}>
+                Compartilhar Perfil
+              </Button>
+            </div>
+          )}
+
+          {activeTabKey === "links" && (
+            <div>
+              <Input
+                placeholder="Adicionar novo link"
+                value={newLink}
+                onChange={(e) => setNewLink(e.target.value)}
+              />
+              <Button className="mt-5" onClick={handleAddLink} loading={loading}>
+                Adicionar
+              </Button>
+
+              {/* Botão para ver os links do usuário */}
+              <Button className="mt-5" onClick={handleViewMyLinks}>
+                Ver Meus Links
+              </Button>
+
+              {/* Lista de links */}
+              <List
+                dataSource={links}
+                renderItem={(link, index) => (
+                  <Item>
+                    {editableLinkId === index ? (
+                      <>
+                        <Input
+                          value={link.url}
+                          onChange={(e) => {
+                            const updatedLinks = [...links];
+                            updatedLinks[index].url = e.target.value;
+                            setLinks(updatedLinks);
+                          }}
+                        />
+                        <Button onClick={() => handleSaveLink(index)}>Salvar</Button>
+                      </>
+                    ) : (
+                      <>
+                        {link.url}
+                        <Button onClick={() => handleEditLink(index)}>Editar</Button>
+                        <Button onClick={() => handleDeleteLink(index)}>Excluir</Button>
+                      </>
+                    )}
+                  </Item>
                 )}
-              </Item>
-            )}
-          />
+              />
+            </div>
+          )}
         </div>
       )}
     </Card>
