@@ -1,4 +1,11 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { UsersEntity } from 'src/users/entities/user.entity';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+} from 'typeorm';
 
 @Entity('links')
 export class LinksEntity {
@@ -18,4 +25,7 @@ export class LinksEntity {
   private setDefaultValues() {
     this.createdAt = new Date();
   }
+
+  @ManyToOne(() => UsersEntity, (user) => user.links)
+  user: UsersEntity;
 }

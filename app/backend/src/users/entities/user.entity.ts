@@ -3,7 +3,6 @@ import {
   BeforeInsert,
   Column,
   Entity,
-  JoinTable,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -28,10 +27,8 @@ export class UsersEntity {
   @Column()
   readonly admin!: boolean;
 
-  @JoinTable()
-  @OneToMany(() => LinksEntity, (link) => link.url)
-  @Column('json', { nullable: true })
-  readonly links!: LinksEntity[];
+  @OneToMany(() => LinksEntity, (link) => link.user)
+  links?: LinksEntity[];
 
   @Column()
   createdAt!: Date;

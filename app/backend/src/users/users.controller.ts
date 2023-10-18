@@ -84,6 +84,7 @@ export class UsersController {
   })
   @Get(':id')
   @HttpCode(HttpStatus.OK)
+  @IsPublic()
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }

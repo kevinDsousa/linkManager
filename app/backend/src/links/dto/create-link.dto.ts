@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { UsersEntity } from 'src/users/entities/user.entity';
 
 export class CreateLinkDto {
   @ApiProperty({
@@ -18,4 +19,8 @@ export class CreateLinkDto {
   })
   @IsBoolean()
   readonly isActive?: boolean = true;
+
+  @IsNumber()
+  @IsNotEmpty()
+  user: UsersEntity;
 }

@@ -1,10 +1,23 @@
-import { useState } from "react";
-import { Modal, Input } from "antd";
+import { useState, useEffect } from "react";
+import { Modal, Input, Checkbox } from "antd";
 import api from "../services/api";
 
 // eslint-disable-next-line react/prop-types
 const EditUserModal = ({ visible, onCancel, userToEdit, token, onUserUpdated }) => {
-  const [editedUser, setEditedUser] = useState({ ...userToEdit });
+  const [editedUser, setEditedUser] = useState({ name: "", gravatarUrl: "", admin: false });
+
+  useEffect(() => {
+    if (userToEdit) {
+      setEditedUser({
+        // eslint-disable-next-line react/prop-types
+        name: userToEdit.name || "",
+        // eslint-disable-next-line react/prop-types
+        gravatarUrl: userToEdit.gravatarUrl || "",
+        // eslint-disable-next-line react/prop-types
+        admin: userToEdit.admin || false,
+      });
+    }
+  }, [userToEdit]);
 
   const handleCancel = () => {
     onCancel();
@@ -30,7 +43,7 @@ const EditUserModal = ({ visible, onCancel, userToEdit, token, onUserUpdated }) 
   return (
     <Modal
       title="Editar Usuário"
-      open={visible}
+      visible={visible}
       onOk={handleUpdateUser}
       onCancel={handleCancel}
       okButtonProps={{
@@ -46,18 +59,21 @@ const EditUserModal = ({ visible, onCancel, userToEdit, token, onUserUpdated }) 
         <label>Name:</label>
         <Input
           value={editedUser.name}
-          onChange={(e) =>
-            setEditedUser({ ...editedUser, name: e.target.value })
-          }
+          onChange={(e) => setEditedUser({ ...editedUser, name: e.target.value })}
         />
       </div>
       <div>
         <label>Gravatar URL:</label>
         <Input
           value={editedUser.gravatarUrl}
-          onChange={(e) =>
-            setEditedUser({ ...editedUser, gravatarUrl: e.target.value })
-          }
+          onChange={(e) => setEditedUser({ ...editedUser, gravatarUrl: e.target.value })}
+        />
+      </div>
+      <div>
+        <label>Admin:</label>
+        <Checkbox
+          checked={editedUser.admin}
+          onChange={(e) => setEditedUser({ ...editedUser, admin: e.target.checked })}
         />
       </div>
     </Modal>
