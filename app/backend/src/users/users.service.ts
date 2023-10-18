@@ -40,13 +40,11 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    const user = await this.repository.findOne({
-      where: { id },
-    });
-    if (!user) {
-      throw new NotFoundException(`Users id ${id} not found`);
-    }
-    return user;
+    return await this.repository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.links', 'links')
+      .where('user.id = :id', { id })
+      .getOne();
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {

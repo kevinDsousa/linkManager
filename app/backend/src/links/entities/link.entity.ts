@@ -21,11 +21,11 @@ export class LinksEntity {
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   createdAt!: Date;
 
+  @ManyToOne(() => UsersEntity, (user) => user.id)
+  user: UsersEntity;
+
   @BeforeInsert()
   private setDefaultValues() {
     this.createdAt = new Date();
   }
-
-  @ManyToOne(() => UsersEntity, (user) => user.links)
-  user: UsersEntity;
 }
