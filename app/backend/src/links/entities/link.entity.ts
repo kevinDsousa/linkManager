@@ -12,7 +12,7 @@ export class LinksEntity {
   @PrimaryGeneratedColumn()
   readonly id!: number;
 
-  @Column()
+  @Column({ unique: true })
   readonly url!: string;
 
   @Column({ default: true })

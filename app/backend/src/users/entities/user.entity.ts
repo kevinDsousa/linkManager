@@ -3,6 +3,7 @@ import {
   BeforeInsert,
   Column,
   Entity,
+  JoinTable,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -15,10 +16,10 @@ export class UsersEntity {
   @Column()
   readonly name!: string;
 
-  @Column()
+  @Column({ unique: true })
   readonly email!: string;
 
-  @Column()
+  @Column({ unique: true })
   readonly gravatarUrl?: string;
 
   @Column()
@@ -27,7 +28,8 @@ export class UsersEntity {
   @Column()
   readonly admin!: boolean;
 
-  @OneToMany(() => LinksEntity, (link) => link.user)
+  @JoinTable()
+  @OneToMany(() => LinksEntity, (link) => link.user, { cascade: true })
   links?: LinksEntity[];
 
   @Column()

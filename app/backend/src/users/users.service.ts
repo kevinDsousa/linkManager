@@ -33,7 +33,10 @@ export class UsersService {
   }
 
   async findAll() {
-    return await this.repository.find();
+    return await this.repository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.links', 'links')
+      .getMany();
   }
 
   async findOne(id: number) {
