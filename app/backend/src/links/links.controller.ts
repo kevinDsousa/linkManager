@@ -13,7 +13,7 @@ import { LinksService } from './links.service';
 import { CreateLinkDto } from './dto/create-link.dto';
 import { UpdateLinkDto } from './dto/update-link.dto';
 import { IsPublic } from 'src/auth/decorators/is-public.decorator';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('links')
 @Controller('links')
@@ -105,6 +105,7 @@ export class LinksController {
     description: 'O servidor encontrou um erro inesperado.',
   })
   @Patch(':id')
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   update(@Param('id') id: string, @Body() updateLinkDto: UpdateLinkDto) {
     return this.linksService.update(+id, updateLinkDto);
@@ -127,6 +128,7 @@ export class LinksController {
     description: 'O servidor encontrou um erro inesperado.',
   })
   @Delete(':id')
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   remove(@Param('id') id: string) {
     return this.linksService.remove(+id);
