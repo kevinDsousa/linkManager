@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
 import { Loading } from "../components/Loading";
-import { Menu } from "antd";
+import { Menu, List, Space } from "antd";
 import api from "../services/api";
 import { LoginOutlined, DashboardOutlined } from "@ant-design/icons";
 
@@ -10,11 +10,12 @@ export const Home = () => {
     JSON.parse(localStorage.getItem("userInfo")) || null
   );
   const [loading, setLoading] = useState(true);
+  const [userLoaded, setUserLoaded] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    if (token) {
+    if (token && !userLoaded) {
       const decodedToken = jwt_decode(token);
       const userId = decodedToken.sub;
       api
@@ -29,13 +30,14 @@ export const Home = () => {
         })
         .finally(() => {
           setLoading(false);
+          setUserLoaded(true);
         });
     } else if (userInfo) {
       setLoading(false);
     } else {
       setLoading(false);
     }
-  }, [userInfo]);
+  }, [userInfo, userLoaded]);
 
   const token = localStorage.getItem("token");
 
@@ -69,7 +71,7 @@ export const Home = () => {
       {loading ? (
         <Loading />
       ) : userInfo ? (
-        <>
+        <Space direction="vertical" className="flex items-center justify-center gap-5">
           <img
             className="rounded w-40 h-40"
             src={userInfo.gravatarUrl}
@@ -79,7 +81,20 @@ export const Home = () => {
           <span className="font-mono font-semibold">
             Email: {userInfo.email}
           </span>
-        </>
+
+          <List
+            header={<div>Links</div>}
+            bordered
+            dataSource={userInfo.links}
+            renderItem={(item) => (
+              <List.Item>
+                <a href={item.url} target="_blank" rel="noopener noreferrer">
+                  {item.url}
+                </a>
+              </List.Item>
+            )}
+          />
+        </Space>
       ) : (
         <span>
           Nenhum usuário encontrado. Faça login para ver as informações.
