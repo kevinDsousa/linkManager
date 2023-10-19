@@ -1,10 +1,22 @@
-import { Card, Input, Button, List } from "antd";
+import { Card, Input, Button, List, Space, Spin } from "antd";
 import { useState, useEffect } from "react";
 import api from "../services/api";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import jwtDecode from "jwt-decode"; // Importe a biblioteca jwt-decode
+import jwtDecode from "jwt-decode";
 
 const { Item } = List;
+
+const Loading = () => (
+  <Space
+    direction="vertical"
+    style={{
+      width: "100%",
+    }}
+  >
+    <Spin tip="Carregando..." size="large" />
+  </Space>
+);
 
 export const CardUser = () => {
   const navigate = useNavigate();
@@ -15,20 +27,19 @@ export const CardUser = () => {
   const [loading, setLoading] = useState(false);
   const [links, setLinks] = useState([]);
   const token = localStorage.getItem("token");
-  // Decodifique o token para obter o ID do usuário
   const decodedToken = jwtDecode(token);
   const userId = decodedToken.sub;
 
   useEffect(() => {
     if (!token) {
-      navigate("/"); // Redirecione para a página inicial ou trate de forma apropriada
+      navigate("/");
     } else {
-      // Realize a solicitação para obter os detalhes do usuário com base no ID fornecido
-      api.get(`/users/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      api
+        .get(`/users/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then((response) => {
           setUser(response.data);
         })
@@ -40,41 +51,42 @@ export const CardUser = () => {
 
   const onTabChange = (key) => {
     setActiveTabKey(key);
+    if (key === "links") {
+      setLoading(true);
+      api
+        .get(`/users/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setLinks(response.data.links);
+        })
+        .catch((error) => {
+          console.error("Erro ao buscar links do usuário:", error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   };
 
   const handleAddLink = async () => {
-    // Lógica para adicionar um novo link, similar à implementação anterior
   };
 
   const handleEditLink = (linkId) => {
-    // Lógica para editar um link
+    setEditableLinkId(linkId);
   };
 
   const handleSaveLink = (linkId) => {
-    // Lógica para salvar um link editado
+    setEditableLinkId(null);
   };
 
   const handleDeleteLink = async (linkId) => {
-    // Lógica para excluir um link
   };
 
   const handleShareProfile = () => {
     navigate("/");
-  };
-
-  // Quando o botão "Ver Meus Links" é clicado, faça a solicitação e atualize os links
-  const handleViewMyLinks = () => {
-    api.get(`/users/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => {
-        setLinks(response.data);
-      })
-      .catch((error) => {
-        console.error("Erro ao buscar links do usuário:", error);
-      });
   };
 
   return (
@@ -117,38 +129,43 @@ export const CardUser = () => {
                 Adicionar
               </Button>
 
-              {/* Botão para ver os links do usuário */}
-              <Button className="mt-5" onClick={handleViewMyLinks}>
-                Ver Meus Links
-              </Button>
-
-              {/* Lista de links */}
-              <List
-                dataSource={links}
-                renderItem={(link, index) => (
-                  <Item>
-                    {editableLinkId === index ? (
-                      <>
-                        <Input
-                          value={link.url}
-                          onChange={(e) => {
-                            const updatedLinks = [...links];
-                            updatedLinks[index].url = e.target.value;
-                            setLinks(updatedLinks);
-                          }}
-                        />
-                        <Button onClick={() => handleSaveLink(index)}>Salvar</Button>
-                      </>
-                    ) : (
-                      <>
-                        {link.url}
-                        <Button onClick={() => handleEditLink(index)}>Editar</Button>
-                        <Button onClick={() => handleDeleteLink(index)}>Excluir</Button>
-                      </>
-                    )}
-                  </Item>
-                )}
-              />
+              {loading ? (
+                <Loading />
+              ) : (
+                <List
+                  dataSource={links}
+                  renderItem={(link, index) => (
+                    <Item>
+                      {editableLinkId === index ? (
+                        <>
+                          <Input
+                            value={link.url}
+                            onChange={(e) => {
+                              const updatedLinks = [...links];
+                              updatedLinks[index].url = e.target.value;
+                              setLinks(updatedLinks);
+                            }}
+                          />
+                          <Button onClick={() => handleSaveLink(index)}>Salvar</Button>
+                        </>
+                      ) : (
+                        <div className="flex gap-3">
+                        <span className="truncate w-72">
+                          {link.url}
+                        </span>
+                        <Button className="bg-orange-500 text-white flex items-center justify-center w-10" onClick={() => handleEditLink(index)}>
+                          <EditOutlined />
+                        </Button>
+                        <Button className="bg-red-700 text-white flex items-center justify-center w-10" onClick={() => handleDeleteLink(index)}>
+                          <DeleteOutlined />
+                        </Button>
+                      </div>
+                      
+                      )}
+                    </Item>
+                  )}
+                />
+              )}
             </div>
           )}
         </div>
