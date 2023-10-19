@@ -1,4 +1,4 @@
-import { Card, Input, Button, List, Space, Spin } from "antd";
+import { Card, Input, Button, List, Space, Spin, Modal } from "antd";
 import { useState, useEffect } from "react";
 import api from "../services/api";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
@@ -29,6 +29,9 @@ export const CardUser = () => {
   const token = localStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const userId = decodedToken.sub;
+
+  const [deleteConfirmationVisible, setDeleteConfirmationVisible] = useState(false);
+  const [linkToDeleteId, setLinkToDeleteId] = useState(null);
 
   useEffect(() => {
     if (!token) {
@@ -83,6 +86,42 @@ export const CardUser = () => {
   };
 
   const handleDeleteLink = async (linkId) => {
+    try {
+      setLoading(true);
+      const linkToDelete = links[linkId];
+      const response = await api.delete(`/links/${linkToDelete.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.status === 204) {
+        const updatedLinks = [...links];
+        updatedLinks.splice(linkId, 1);
+        setLinks(updatedLinks);
+      } else {
+        console.error("Erro ao excluir o link. Resposta inesperada:", response);
+      }
+    } catch (error) {
+      console.error("Erro ao excluir o link:", error);
+    } finally {
+      setLoading(false);
+      location.reload()
+    }
+  };
+
+  const showDeleteConfirmation = (linkId) => {
+    setLinkToDeleteId(linkId);
+    setDeleteConfirmationVisible(true);
+  };
+
+  const confirmDeleteLink = () => {
+    handleDeleteLink(linkToDeleteId);
+    setDeleteConfirmationVisible(false);
+  };
+
+  const cancelDeleteLink = () => {
+    setLinkToDeleteId(null);
+    setDeleteConfirmationVisible(false);
   };
 
   const handleShareProfile = () => {
@@ -146,26 +185,39 @@ export const CardUser = () => {
                               setLinks(updatedLinks);
                             }}
                           />
-                          <Button onClick={() => handleSaveLink(index)}>Salvar</Button>
+                          <Button className="ml-2" onClick={() => handleSaveLink(index)}>Salvar</Button>
                         </>
                       ) : (
                         <div className="flex gap-3">
-                        <span className="truncate w-72">
-                          {link.url}
-                        </span>
-                        <Button className="bg-orange-500 text-white flex items-center justify-center w-10" onClick={() => handleEditLink(index)}>
-                          <EditOutlined />
-                        </Button>
-                        <Button className="bg-red-700 text-white flex items-center justify-center w-10" onClick={() => handleDeleteLink(index)}>
-                          <DeleteOutlined />
-                        </Button>
-                      </div>
-                      
+                          <span className="truncate w-72">
+                            {link.url}
+                          </span>
+                          <Button
+                            className="bg-orange-500 text-white flex items-center justify-center w-10"
+                            onClick={() => handleEditLink(index)}
+                          >
+                            <EditOutlined />
+                          </Button>
+                          <Button
+                            className="bg-red-700 text-white flex items-center justify-center w-10"
+                            onClick={() => showDeleteConfirmation(index)}
+                          >
+                            <DeleteOutlined />
+                          </Button>
+                        </div>
                       )}
                     </Item>
                   )}
                 />
               )}
+              <Modal
+                title="Confirmar exclusão"
+                open={deleteConfirmationVisible}
+                onOk={confirmDeleteLink}
+                onCancel={cancelDeleteLink}
+              >
+                Tem certeza de que deseja excluir este link?
+              </Modal>
             </div>
           )}
         </div>
