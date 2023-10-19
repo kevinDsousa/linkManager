@@ -43,7 +43,7 @@ const EditUserModal = ({ visible, onCancel, userToEdit, token, onUserUpdated }) 
   return (
     <Modal
       title="Editar Usuário"
-      visible={visible}
+      open={visible}
       onOk={handleUpdateUser}
       onCancel={handleCancel}
       okButtonProps={{

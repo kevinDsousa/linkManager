@@ -66,7 +66,32 @@ export const CardUser = () => {
     }
   };
 
-  const handleAddLink = async () => {};
+  const handleAddLink = async () => {
+    try {
+      setLoading(true);
+      const response = await api.post(
+        `/links`,
+        { url: newLink, isActive: false, user: user.id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status === 201) {
+        setLinks([...links, response.data]);
+        setNewLink("");
+      } else {
+        console.error("Erro ao adicionar o link. Resposta inesperada:", response);
+      }
+    } catch (error) {
+      console.error("Erro ao adicionar o link:", error);
+    } finally {
+      setLoading(false);
+      window.location.reload();
+    }
+  };
+  
 
   const handleEditLink = (link) => {
     setEditableLinkId(link.id);
@@ -101,6 +126,7 @@ export const CardUser = () => {
       setEditableLinkId(null);
       setEditableLink(null);
       setLoading(false);
+      window.location.reload();
     }
   };
 
@@ -108,7 +134,6 @@ export const CardUser = () => {
     setLinkToDeleteId(linkId);
     setDeleteConfirmationVisible(true);
   };
-
   const confirmDeleteLink = () => {
     try {
       setLoading(true);
@@ -135,6 +160,7 @@ export const CardUser = () => {
           setLinkToDeleteId(null);
           setDeleteConfirmationVisible(false);
           setLoading(false);
+          window.location.reload();
         });
     } catch (error) {
       console.error("Erro ao excluir o link:", error);
